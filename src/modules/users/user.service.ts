@@ -80,8 +80,13 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<UserDocument> {
-    const smrAccount = await this.userModel.findOne({ _id: id });
-    return smrAccount;
+    const user = await this.userModel.findOne({ _id: id });
+    return user;
+  }
+
+  async findOneByEmail(email: string): Promise<UserDocument> {
+    const user = await this.userModel.findOne({email: email });
+    return user;
   }
 
   async update(updateSmrAccountDto: any): Promise<UserDocument> {
