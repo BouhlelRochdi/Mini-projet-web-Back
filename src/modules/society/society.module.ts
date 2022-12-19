@@ -5,9 +5,15 @@ https://docs.nestjs.com/modules
 */
 
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { SocietySchema } from './model/society';
 
 @Module({
-    imports: [],
+    imports: [
+        MongooseModule.forFeature([
+            { name: 'Society', schema: SocietySchema }
+          ])
+    ],
     controllers: [
         SocietyController,],
     providers: [

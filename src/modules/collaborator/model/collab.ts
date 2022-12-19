@@ -5,11 +5,12 @@ import * as mongoose from 'mongoose';
 import { SocietyBase } from 'src/modules/society/dto/society-dto';
 import { ProjectBase } from 'src/modules/project/dto/project-dto';
 import { DepartBase } from 'src/modules/depart/dto/depart-dto';
+import { CollabBase } from '../dto/collab-dto';
 
 export type CollabDocument = Collab & mongoose.Document;
 
 @Schema({ timestamps: true })
-export class Collab {
+export class Collab extends CollabBase {
   @Prop() firstName: string;
   @Prop() lastName: string;
   @Prop() email: string;
