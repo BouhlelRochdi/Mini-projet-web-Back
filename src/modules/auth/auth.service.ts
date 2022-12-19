@@ -1,28 +1,49 @@
-import { Injectable } from '@nestjs/common';
-//import { CreateAuthDto } from './dto/create-auth.dto';
-//import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+
+import { UserService } from '../users/user.service';
+import { AuthDto } from './dto/auth.dto';
+import { JwtUserPayload } from './dto/jwt.use.payload';
+
+const users = require('./dto/users.json');
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: any) {
-    //create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) { }
+
+  async validateUser(email: string, pass: string): Promise<any> {
+    try {
+      console.log('validateUser user',email);
+      const user = await this.userService.checkLogin(email, pass);
+      console.log('validateUser user',user);
+      if (user) {
+        return user;
+      } else {
+        throw new UnauthorizedException();
+      }
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
+  }
+  
+  async login(user: JwtUserPayload) {
+    console.log('auth service login',user);
+    const payload : JwtUserPayload = { id: user.id, email: user.email, jobtitle: user?.jobtitle };
+    console.log('auth service login payload',payload);
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: any) {
-    //update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  signIn(user: AuthDto) {
+    //const findeduser: any = this.societyModel.find((_user: AuthDto) => _user.email === user.email);
+    const findeduser: any = users.find((_user: AuthDto) => _user.email === user.email);
+    if(!findeduser) throw new UnauthorizedException('user does not exist');
+    if(findeduser.password !== user.password) throw new UnauthorizedException('Pasword incorrect');
+    return findeduser;
   }
 }

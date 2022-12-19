@@ -4,8 +4,7 @@ import { MongooseOptionsFactory, MongooseModuleOptions } from "@nestjs/mongoose"
 import { environment } from "src/environment/environment";
 
 export const defaultConfig = {
-  uri: environment.mongoUri, 
-  useFindAndModify: false,
+  uri: environment.mongoUri,
   useUnifiedTopology: true,
   useNewUrlParser: true,
 }

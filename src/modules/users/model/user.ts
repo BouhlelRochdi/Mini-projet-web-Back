@@ -11,10 +11,16 @@ export class User extends UserBase {
   @Prop() firstName?: string;
   @Prop() lastName?: string;
   @Prop() email?: string;
+  @Prop() password: string;
   @Prop() adress: string;
   @Prop() phone: string;
   @Prop() cvLink: string;
-  @Prop() photo: string;//CustomFileType;
+  @Prop() photo: string;
+  @Prop() logo: string;
+  @Prop() matFiscal: string;
+  @Prop() birthdate: Date;
+  @Prop() accountType: string;
+  @Prop() jobtitle: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

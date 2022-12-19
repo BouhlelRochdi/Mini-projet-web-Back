@@ -1,9 +1,9 @@
-import { UpdateSocietyDto } from "src/modules/society/dto/society-dto";
+import { UpdateUserDto } from "src/modules/users/dto/user-dto";
 
 export class ProjectBase {
   name?: string;
   client?: string;
-  society?: UpdateSocietyDto;
+  society?: UpdateUserDto;
 }
 export class CreateProjectDto extends ProjectBase {
 }

@@ -1,11 +1,9 @@
-import { UpdateCollabDto } from "src/modules/collaborator/dto/collab-dto";
 import { UpdateProjectDto } from "src/modules/project/dto/project-dto";
-import { UpdateSocietyDto } from "src/modules/society/dto/society-dto";
+import { UpdateUserDto } from "src/modules/users/dto/user-dto";
 
 export class DepartBase {
   name?: string;
-  responsable?: UpdateCollabDto;
-  society?: UpdateSocietyDto;
+  responsable?: UpdateUserDto;
   project?: UpdateProjectDto[];
 }
 export class CreateDepartDto extends DepartBase {

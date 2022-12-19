@@ -5,7 +5,7 @@ export const environment = {
     apiUrl: 'https://localhost:3333/',
 
     // DB
-    mongoUri: 'mongodb://localhost:27017/mini_prj_web',
+    mongoUri: 'mongodb://localhost/mini_prj_web',
 
     // JWT
     jwtSecret: 'miniprj-nest-local-secretKey-001',
