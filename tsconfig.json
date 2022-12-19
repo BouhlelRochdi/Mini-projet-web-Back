@@ -10,6 +10,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "watch": true,
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -17,20 +18,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "watch": true,
     "paths": {
-      "@app/user": [
-        "libs/user/src"
-      ],
-      "@app/user/*": [
-        "libs/user/src/*"
-      ],
-      "@app/auth": [
-        "libs/auth/src"
-      ],
-      "@app/auth/*": [
-        "libs/auth/src/*"
-      ],
       "@app/shared": [
         "libs/shared/src"
       ],
