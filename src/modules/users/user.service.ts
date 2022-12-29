@@ -1,10 +1,12 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import * as mongoose from 'mongoose';
 import { UserDocument } from './model/user';
 import { CreateUserDto, UpdateUserDto } from './dto/user-dto';
 import { JwtUserPayload } from '../auth';
+import * as bcrypt from 'bcrypt';
+
+const SALT_WORK_FACTOR = 10;
 
 
 @Injectable()
@@ -17,12 +19,16 @@ export class UserService {
   async checkLogin(email: string, password: string): Promise<JwtUserPayload> {
     // https://github.com/Automattic/mongoose/issues/8119
     const findedUser = await this.getAuthenticated(email, password);
-    // console.log('checkLogin reason',reason,err,user);
     if (!findedUser) {
       throw new HttpException('user did not have an account', 401);;
     }
     // login was successful if we have a user
-    return { id: findedUser._id, email: findedUser.email, accountType: findedUser.accountType, jobtitle: findedUser.jobtitle } as JwtUserPayload;
+    return {
+      id: findedUser._id,
+      email: findedUser.email,
+      accountType: findedUser.accountType,
+      jobtitle: findedUser.jobtitle
+    } as JwtUserPayload;
   }
 
   async getAuthenticated(email, password): Promise<UpdateUserDto | null> {
@@ -44,54 +50,65 @@ export class UserService {
     }
   }
 
-  comparePassword(password: any, password1: string) {
-    if (password === password1) return true;
-    else return false;
-  }
+  async comparePassword(userPassword, hashPass) {
+    return await bcrypt.compare(userPassword, hashPass);
+  };
 
-  async create(CreateUserDto: CreateUserDto, cuser: any): Promise<UserDocument> {
-    if (!cuser && CreateUserDto.email != cuser.id) {
-      throw new HttpException('Not user request found or not authUser in smr-account', 401);
+  async create(createUserDto: CreateUserDto, cuser: any): Promise<UserDocument> {
+    if (!cuser && createUserDto.email != cuser.id) {
+      throw new HttpException('Not user request found', 401);
     } else {
-      const createObject = new this.userModel(CreateUserDto)
-      return await createObject.save().then(createObject => createObject.populate('user'));
+      const cryptPwd = await this.cryptPassword('user')
+      const completeUser: CreateUserDto = { ...createUserDto, password: cryptPwd };
+      const createObject = new this.userModel(completeUser)
+      return await createObject.save();
     }
   }
 
-  async registerAccount(CreateUserDto: CreateUserDto): Promise<UserDocument> {
-    // TODO with security(check login attempts after user login)
-    // missing upoload photo
-    const createObject = new this.userModel(CreateUserDto);
-    return await createObject.save();
-    //.then(createObject => createObject.populate('user'));
+  async registerAccount(createUserDto: CreateUserDto): Promise<UserDocument> {
+    if (createUserDto || createUserDto.password != null) {
+      const hashPwd = await this.cryptPassword(createUserDto.password)
+      const newObj: CreateUserDto = { ...createUserDto, password: hashPwd }
+      const createObject = new this.userModel(newObj);
+      return await createObject.save();
+    } else {
+      throw new HttpException('Not user request found or missing password field', 401);
+    }
   }
 
-  async findUserById(id: string) {
+  async cryptPassword(password: string) {
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    const hash = await bcrypt.hash(password, salt)
+    return hash;
+  }
+
+  async findOneById(id: string): Promise<UserDocument> {
     if (!id) {
-      throw new HttpException('Not id found', 401);
+      throw new HttpException('No id found', 401);
     } else {
       try {
-        const aquery: any = { _id: new mongoose.Types.ObjectId(id) };
-        return await this.userModel.find(aquery).exec();
+        return await this.userModel.findById({ _id: id }).exec();
       } catch (err) {
         throw new HttpException('Error in found applications', 603);
       }
     }
   }
 
-  async findOne(id: string): Promise<UserDocument> {
-    const user = await this.userModel.findOne({ _id: id });
-    return user;
+  async findUserByEmail(email: string): Promise<UserDocument> {
+    if (!email) {
+      throw new HttpException('No email found', 401);
+    } else {
+      try {
+        return await this.userModel.findOne({ email: email }).exec();
+      } catch (err) {
+        throw new HttpException('Error in found account', 603);
+      }
+    }
   }
 
-  async findOneByEmail(email: string): Promise<UserDocument> {
-    const user = await this.userModel.findOne({email: email });
-    return user;
-  }
-
-  async update(updateSmrAccountDto: any): Promise<UserDocument> {
+  async updateUser(updateUserDto: UpdateUserDto): Promise<UserDocument> {
     const updateOptions = { upsert: true, new: true };
-    const service = await this.userModel.findByIdAndUpdate(updateSmrAccountDto._id, updateSmrAccountDto, updateOptions);
+    const service = await this.userModel.findByIdAndUpdate(updateUserDto._id, updateUserDto, updateOptions);
     return service;
   }
 
