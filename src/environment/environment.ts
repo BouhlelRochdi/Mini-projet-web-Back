@@ -2,10 +2,10 @@ export const environment = {
     production: false,
     baseUrl: 'http://localhost:4200/',
     apiPort: 3333,
-    apiUrl: 'https://localhost:3333/',
+    apiUrl: 'http://localhost:3333/',
 
     // DB
-    mongoUri: 'mongodb://localhost/mini_prj_web',
+    mongoUri: 'mongodb://127.0.0.1:27017/mini_prj_web',
 
     // JWT
     jwtSecret: 'miniprj-nest-local-secretKey-001',
