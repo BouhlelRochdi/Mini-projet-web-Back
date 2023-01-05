@@ -21,6 +21,12 @@ export class UserController {
     return this.userService.create(createUserDto, cuser);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('currentUser')
+  getCurrentUser(@CurrentUser() cuser: JwtUserPayload) {
+    return this.userService.getCurrentUser(cuser);
+  }
+
   //@UseGuards(AuthGuard('jwt'))
   @Get('user-mail')
   findUserByEmail(@Body() body) {

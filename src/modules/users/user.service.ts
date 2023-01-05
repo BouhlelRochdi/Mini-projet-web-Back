@@ -106,6 +106,14 @@ export class UserService {
     }
   }
 
+  async getCurrentUser(cuser: JwtUserPayload){
+    try {
+      return await this.userModel.findById({ _id: cuser.id }).exec();
+    } catch (err) {
+      throw new HttpException('Error in found account', 603);
+    }
+  }
+
   async updateUser(updateUserDto: UpdateUserDto): Promise<UserDocument> {
     const updateOptions = { upsert: true, new: true };
     const service = await this.userModel.findByIdAndUpdate(updateUserDto._id, updateUserDto, updateOptions);
