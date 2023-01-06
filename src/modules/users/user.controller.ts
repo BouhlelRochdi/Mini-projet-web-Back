@@ -22,6 +22,12 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Post('update')
+  updateCurrentUser(@Body() updateUser: UpdateUserDto, @CurrentUser() cuser: JwtUserPayload) {
+    return this.userService.updateUser(updateUser, cuser);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get('currentUser')
   getCurrentUser(@CurrentUser() cuser: JwtUserPayload) {
     return this.userService.getCurrentUser(cuser);
@@ -41,8 +47,8 @@ export class UserController {
 
   //@UseGuards(AuthGuard('jwt'))
   @Put()
-  updateUser(@Body() updateUserDto: UpdateUserDto) {
-    return this.userService.updateUser(updateUserDto);
+  updateUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() cuser: JwtUserPayload) {
+    return this.userService.updateUser(updateUserDto, cuser);
   }
 
   //@UseGuards(AuthGuard('jwt'))

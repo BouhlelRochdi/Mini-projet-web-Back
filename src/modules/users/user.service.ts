@@ -106,7 +106,7 @@ export class UserService {
     }
   }
 
-  async getCurrentUser(cuser: JwtUserPayload){
+  async getCurrentUser(cuser: JwtUserPayload) {
     try {
       return await this.userModel.findById({ _id: cuser.id }).exec();
     } catch (err) {
@@ -114,10 +114,17 @@ export class UserService {
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto): Promise<UserDocument> {
-    const updateOptions = { upsert: true, new: true };
-    const service = await this.userModel.findByIdAndUpdate(updateUserDto._id, updateUserDto, updateOptions);
-    return service;
+  async updateUser(updateUserDto: UpdateUserDto, cuser: JwtUserPayload): Promise<any> {
+    const findedUser = await this.userModel.findById({ _id: cuser.id }).exec();
+    if (!findedUser) throw new HttpException('User does not exist', 405);
+    else {
+      const updateOptions = { upsert: true, new: true };
+      const service = await this.userModel.updateOne({ _id: findedUser._id }, updateUserDto, updateOptions);
+      if(!service){
+        throw new HttpException('Update faile', 405);
+      }
+      else return service;
+    }
   }
 
   async remove(id: number) {
