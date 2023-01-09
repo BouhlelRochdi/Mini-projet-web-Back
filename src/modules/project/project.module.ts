@@ -11,7 +11,7 @@ import { ProjectSchema } from './model/project';
 @Module({
     imports: [
         MongooseModule.forFeature([
-            { name: 'Project', schema: ProjectSchema }
+            { name: 'project', schema: ProjectSchema }
           ])
     ],
     controllers: [
