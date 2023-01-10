@@ -43,4 +43,9 @@ export class ProjectController {
     getProjectByDepart(@Query() query) {
         return this.projectService.getProjectByDepart(query.id);
     }
+
+    @Get('all')
+    getAllProject() {
+        return this.projectService.getAllProject();
+    }
  }

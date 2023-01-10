@@ -68,4 +68,12 @@ export class ProjectService {
       }
     }
   }
+
+  async getAllProject() {
+    try {
+      return await this.projectModel.find().populate('society').populate('depart').exec();
+    } catch (err) {
+      throw new HttpException('Error in found project', 603);
+    }
+  }
 }
