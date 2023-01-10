@@ -9,15 +9,15 @@ import { CurrentUser } from '../users';
 import { CreateProjectDto, UpdateProjectDto } from './dto/project-dto';
 import { ProjectService } from './project.service';
 
-@Controller()
+@Controller('project')
 export class ProjectController {
 
     constructor(private readonly projectService: ProjectService) { }
 
     @UseGuards(AuthGuard('jwt'))
-    @Post('register')
-    addNewProject(@Body() createProjectDto: CreateProjectDto) {
-        return this.projectService.addNewProject(createProjectDto);
+    @Post('create')
+    addNewProject(@Body() createProjectDto: CreateProjectDto, @CurrentUser() cuser: JwtUserPayload) {
+        return this.projectService.addNewProject(createProjectDto, cuser);
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -33,8 +33,14 @@ export class ProjectController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('byResp')
+    @Get('bysociety')
     getProjectBySociety(@Query() query) {
         return this.projectService.getProjectBySociety(query.id);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('byDepart')
+    getProjectByDepart(@Query() query) {
+        return this.projectService.getProjectByDepart(query.id);
     }
  }

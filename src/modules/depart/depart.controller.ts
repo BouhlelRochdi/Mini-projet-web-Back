@@ -16,15 +16,21 @@ export class DepartController {
     constructor(private readonly departService: DepartService) { }
 
     @UseGuards(AuthGuard('jwt'))
-    @Post('register')
-    addNewDepart(@Body() createDepartDto: CreateDepartDto) {
-        return this.departService.addNewDepart(createDepartDto);
+    @Post('add')
+    addNewDepart(@Body() createDepartDto: CreateDepartDto, @CurrentUser() cuser: JwtUserPayload) {
+        return this.departService.addNewDepart(createDepartDto, cuser);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Post('update')
     updateDepart(@Body() updateDepartDto: UpdateDepartDto, @CurrentUser() cuser: JwtUserPayload) {
         return this.departService.updateDepart(updateDepartDto);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('all')
+    getAllDepart(@CurrentUser() cuser: JwtUserPayload) {
+        return this.departService.getAllDepart(cuser);
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -40,7 +46,7 @@ export class DepartController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('allDepart')
+    @Get('allCollabInDepart')
     getAllCollabInDepart(@Query() query) {
         return this.departService.getAllCollabInDepart(query.id);
     }

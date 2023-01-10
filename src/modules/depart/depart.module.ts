@@ -11,7 +11,7 @@ import { DepartSchema } from './model/depart';
 @Module({
     imports: [
         MongooseModule.forFeature([
-            { name: 'depart', schema: DepartSchema }
+            { name: 'Depart', schema: DepartSchema }
           ])
     ],
     controllers: [

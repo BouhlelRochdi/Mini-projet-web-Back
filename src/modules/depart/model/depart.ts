@@ -11,7 +11,6 @@ export type DepartDocument = Depart & mongoose.Document;
 export class Depart extends DepartBase {
   @Prop() name: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' }) responsable: UserBase;
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }] }) project: ProjectBase[];
 }
 
 export const DepartSchema = SchemaFactory.createForClass(Depart);
