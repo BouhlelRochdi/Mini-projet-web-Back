@@ -131,4 +131,16 @@ export class UserService {
     const smrAccount = await this.userModel.findOneAndDelete({ _id: id }).exec();
     return { _id: smrAccount._id };
   }
+
+  async updateRandoWithPhoto(_id: string, arg1: { path: string; filename: string; mimetype: string; }) {
+    const file = arg1;
+    const findedrando = await this.userModel.findById({_id:_id});
+    console.log('rando:',findedrando);
+    const newobj = {_id: findedrando._id, photo: file.path+'.jpg', adress: findedrando.adress }
+    console.log('message:',newobj);
+    const rando = await this.userModel.findByIdAndUpdate({ _id:_id }, newobj);
+    return await rando;
+}
+
+
 }
