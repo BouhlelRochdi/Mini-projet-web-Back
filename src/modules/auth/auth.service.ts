@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto, UserBase } from '../users/dto/user-dto';
 
 import { UserService } from '../users/user.service';
-import { AuthDto } from './dto/auth.dto';
 import { JwtUserPayload } from './dto/jwt.use.payload';
 
 const users = require('./dto/users.json');
@@ -33,7 +32,6 @@ export class AuthService {
     const findeduser: UpdateUserDto = await this.userService.findUserByEmail(user.email);
     //const findeduser: any = users.find((_user: AuthDto) => _user.email === user.email);
     if (!findeduser) throw new UnauthorizedException('user does not exist');
-
     const isPassmatch = await this.userService.comparePassword(user.password, findeduser.password);
     if (!isPassmatch) throw new UnauthorizedException('Pasword incorrect');
     const payloadtosign: JwtUserPayload = {

@@ -4,7 +4,6 @@ import { UpdateUserDto } from "src/modules/users/dto/user-dto";
 export class DepartBase {
   name?: string;
   responsable?: UpdateUserDto;
-  project?: UpdateProjectDto[];
 }
 export class CreateDepartDto extends DepartBase {
 }

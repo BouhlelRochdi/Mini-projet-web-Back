@@ -106,14 +106,41 @@ export class UserService {
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto): Promise<UserDocument> {
-    const updateOptions = { upsert: true, new: true };
-    const service = await this.userModel.findByIdAndUpdate(updateUserDto._id, updateUserDto, updateOptions);
-    return service;
+  async getCurrentUser(cuser: JwtUserPayload) {
+    try {
+      return await this.userModel.findById({ _id: cuser.id }).exec();
+    } catch (err) {
+      throw new HttpException('Error in found account', 603);
+    }
+  }
+
+  async updateUser(updateUserDto: UpdateUserDto, cuser: JwtUserPayload): Promise<any> {
+    const findedUser = await this.userModel.findById({ _id: cuser.id }).exec();
+    if (!findedUser) throw new HttpException('User does not exist', 405);
+    else {
+      const updateOptions = { upsert: true, new: true };
+      const service = await this.userModel.updateOne({ _id: findedUser._id }, updateUserDto, updateOptions);
+      if(!service){
+        throw new HttpException('Update faile', 405);
+      }
+      else return service;
+    }
   }
 
   async remove(id: number) {
     const smrAccount = await this.userModel.findOneAndDelete({ _id: id }).exec();
     return { _id: smrAccount._id };
   }
+
+  async updateRandoWithPhoto(_id: string, arg1: { path: string; filename: string; mimetype: string; }) {
+    const file = arg1;
+    const findedrando = await this.userModel.findById({_id:_id});
+    console.log('rando:',findedrando);
+    const newobj = {_id: findedrando._id, photo: file.path+'.jpg', adress: findedrando.adress }
+    console.log('message:',newobj);
+    const rando = await this.userModel.findByIdAndUpdate({ _id:_id }, newobj);
+    return await rando;
+}
+
+
 }
